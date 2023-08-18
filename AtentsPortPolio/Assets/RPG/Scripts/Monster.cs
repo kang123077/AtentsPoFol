@@ -16,6 +16,7 @@ public class Monster : BattleSystem
     Vector3 startPos = Vector3.zero;
     float playTime = 0.0f;
     public AIPerception myPerception;
+    public Transform barPoint;
 
     /// <summary>
     /// 상태가 바뀔 때 사용
@@ -29,11 +30,21 @@ public class Monster : BattleSystem
             case State.Create:
                 break;
             case State.Normal:
+                float rnd = Random.Range(0.0f, 360.0f);
+                Vector3 rndDir = Quaternion.Euler(0, rnd, 0) * Vector3.forward * Random.Range(0.0f, 5.0f);
+                Vector3 rndPos = startPos + rndDir;
+                MoveToPos(rndPos, () => { StartCoroutine(DelayChangeNormal(playTime)); });
+                playTime = Random.Range(1.0f, 3.0f);
+                ChangeState(State.Roaming);
+                break;
+            case State.Roaming:
                 break;
             case State.Battle:
-                FollowTarget(myPerception.myTarget, MyBattleStat.Range, AttackCheck);
+                FollowTarget(myPerception.myTarget, myBattleStat.AttackRange, AttackCheck);
                 break;
             case State.Dead:
+                StopAllCoroutines();
+                StartCoroutine(DisAearing(2.0f));
                 break;
         }
     }
@@ -48,19 +59,11 @@ public class Monster : BattleSystem
             case State.Create:
                 break;
             case State.Normal:
-                float rand = Random.Range(0.0f, 360.0f);
-                // 쿼터니언에 벡터를 곱하면 벡터가 회전한다고 이해 할 수 있다.
-                Vector3 randDir = Quaternion.Euler(0, rand, 0) * Vector3.forward * Random.Range(0.0f, 5.0f);
-                Vector3 randPos = startPos + randDir;
-                // 하단과 같은 디자인 패턴을 observer 패턴이라고 한다.
-                MoveToPos(randPos, () => { StartCoroutine(DelayChangeNormal(playTime)); });
-                playTime = Random.Range(1.0f, 3.0f);
-                ChangeState(State.Roaming);
                 break;
             case State.Roaming:
                 break;
             case State.Battle:
-                curAttackDelay += Time.deltaTime;
+                if (!myAnim.GetBool("isAttacking")) curAttackDelay += Time.deltaTime;
                 break;
             case State.Dead:
                 break;
@@ -86,12 +89,35 @@ public class Monster : BattleSystem
         ChangeState(State.Normal);
     }
 
+    // 죽으면 사라지는 코루틴
+    IEnumerator DisAearing(float t)
+    {
+        yield return new WaitForSeconds(t);
+        float dist = 1.0f;
+        while (dist < 0.0f)
+        {
+            float delta = Time.deltaTime;
+            if (delta > dist) delta = dist;
+            transform.Translate(Vector3.down * delta, Space.World);
+            dist -= delta;
+            yield return null;
+        }
+        Destroy(gameObject);
+    }
+
     // 쿼터니언, 유니티에서 회전을 나타낼 때 사용하는 4원수 체계.
     // 이 중 w는 허수(제곱 시 -1이 되는 수)를 통해 회전을 표현 가능
     // 가장 큰 이유로는 짐벌락 현상을 피하기 위해서 이용한다.
 
     void Start()
     {
+        GameObject obj = Instantiate(Resources.Load("UI\\HpBar") as GameObject, SceneData.inst.hpBars);
+        obj.GetComponent<HpBar>().Initialize(barPoint);
+        // changeHp += obj.GetComponentInParent<HpBar>().UpdateValue;
+        changeHp += obj.GetComponent<IChangeValue>().UpdateValue;
+        deadAlarms += obj.GetComponent<IDeadMsg>().OnDead;
+
+        base.Initialize();
         startPos = transform.position;
         ChangeState(State.Normal);
     }
@@ -103,11 +129,22 @@ public class Monster : BattleSystem
 
     public void FindTarget()
     {
+        myTarget = myPerception.myTarget.GetComponent<IBattle>();
+        IAlarms alarm = myPerception.myTarget.GetComponent<IAlarms>();
+        if (alarm != null)
+        {
+            alarm.deadAlarms += () =>
+            {
+                StopAllCoroutines();
+                ChangeState(State.Normal);
+            };
+        }
         ChangeState(State.Battle);
     }
 
-    public void LostTarget()
+    protected override void OnDead()
     {
-        ChangeState(State.Normal);
+        base.OnDead();
+        ChangeState(State.Dead);
     }
 }

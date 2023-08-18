@@ -6,14 +6,15 @@ public class ActionPlayer : CharacterProperty
 {
     public LayerMask enemyMask;
     public Transform myWeapon;
-    bool isComboChecking = false;
+    bool IsComboChecking = false;
     int clickCount = 0;
-
+    // Start is called before the first frame update
     void Start()
     {
 
     }
 
+    // Update is called once per frame
     void Update()
     {
         float x = Input.GetAxis("Horizontal");
@@ -21,17 +22,16 @@ public class ActionPlayer : CharacterProperty
         myAnim.SetFloat("x", x);
         myAnim.SetFloat("y", y);
 
-        if (isComboChecking)
+        if (IsComboChecking)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 clickCount++;
             }
-
         }
         else
         {
-            if (Input.GetMouseButton(0))
+            if (!myAnim.GetBool("isAttacking") && Input.GetMouseButtonDown(0))
             {
                 myAnim.SetTrigger("Attack");
             }
@@ -42,13 +42,13 @@ public class ActionPlayer : CharacterProperty
     {
         clickCount = 0;
         myAnim.SetBool("ComboStop", false);
-        isComboChecking = true;
+        IsComboChecking = true;
     }
 
     public void ComboCheckEnd()
     {
-        isComboChecking = false;
-        if(clickCount == 0)
+        IsComboChecking = false;
+        if (clickCount == 0)
         {
             myAnim.SetBool("ComboStop", true);
         }
@@ -56,16 +56,13 @@ public class ActionPlayer : CharacterProperty
 
     public void OnAttack()
     {
-        // OverlapSphere 는 순간 해당 위치에 가상의 collider를 만들고 범위체크를 한 후 담아준다
-        // 해당 기능의 경우 Rigidbody가 없어도 사용 가능하다
-
         Collider[] list = Physics.OverlapSphere(myWeapon.position, 1.0f, enemyMask);
-        foreach(Collider col in list)
+        foreach (Collider col in list)
         {
             IBattle ib = col.GetComponent<IBattle>();
-            if(ib != null)
+            if (ib != null)
             {
-                ib.OnDamage();
+                ib.OnDamage(0.5f);
             }
         }
     }

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &968425271565851707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7395141797588838201}
+  m_Layer: 7
+  m_Name: BarPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7395141797588838201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968425271565851707}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1575547159049037189}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4907173786948557822
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,6 +164,7 @@ Transform:
   m_Children:
   - {fileID: 6310761803716137688}
   - {fileID: 2810313984831554608}
+  - {fileID: 7395141797588838201}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 200, z: 0}
 --- !u!114 &5097534709868800886
@@ -150,12 +182,14 @@ MonoBehaviour:
   myMoveStat:
     moveSpeed: 3
     rotSpeed: 360
-  MyBattleStat:
-    Attack: 10
-    Range: 1
-    Delay: 2
+  myBattleStat:
+    AttackPower: 10
+    AttackRange: 1.5
+    AttackDelay: 2
+    MaxHealPoint: 1
   myState: 0
   myPerception: {fileID: 7304998701306649093}
+  barPoint: {fileID: 7395141797588838201}
 --- !u!136 &8460424133718435721
 CapsuleCollider:
   m_ObjectHideFlags: 0
