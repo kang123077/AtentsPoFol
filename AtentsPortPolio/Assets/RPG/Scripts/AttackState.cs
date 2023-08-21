@@ -14,7 +14,6 @@ public class AttackState : StateMachineBehaviour
     {
         if (!isMachine)
         {
-            Debug.Log("OnStateMachineEnter");
             animator.SetBool("isAttacking", true);
         }
     }
@@ -30,7 +29,6 @@ public class AttackState : StateMachineBehaviour
     {
         if (!isMachine)
         {
-            Debug.Log("OnStateMachineEnter");
             animator.SetBool("isAttacking", false);
         }
         
@@ -38,13 +36,11 @@ public class AttackState : StateMachineBehaviour
 
     public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        Debug.Log("OnStateMachineEnter");
         animator.SetBool("isAttacking", true);
     }
 
     public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        Debug.Log("OnStateMachineExit");
         animator.SetBool("isAttacking", false);
     }
 

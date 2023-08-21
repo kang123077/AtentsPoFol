@@ -182,11 +182,12 @@ MonoBehaviour:
   myMoveStat:
     moveSpeed: 3
     rotSpeed: 360
+  iconColor: {r: 0.7735849, g: 0.09122462, b: 0.09122462, a: 1}
   myBattleStat:
     AttackPower: 10
-    AttackRange: 1.5
+    AttackRange: 5
     AttackDelay: 2
-    MaxHealPoint: 1
+    MaxHealPoint: 100
   myState: 0
   myPerception: {fileID: 7304998701306649093}
   barPoint: {fileID: 7395141797588838201}

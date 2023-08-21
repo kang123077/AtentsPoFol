@@ -9,6 +9,9 @@ public class SceneData : MonoBehaviour
 
     public Transform hpBars;
 
+    public StaticHpBar playerHpUI;
+
+    public Transform miniMap;
     private void Awake()
     {
         inst = this;

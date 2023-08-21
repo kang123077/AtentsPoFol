@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionPlayer : CharacterProperty
+public class ActionPlayer : BattleSystem
 {
     public LayerMask enemyMask;
     public Transform myWeapon;
@@ -11,7 +11,8 @@ public class ActionPlayer : CharacterProperty
     // Start is called before the first frame update
     void Start()
     {
-
+        changeHp += SceneData.inst.playerHpUI.UpdateValue;
+        base.Initialize();
     }
 
     // Update is called once per frame
@@ -54,7 +55,7 @@ public class ActionPlayer : CharacterProperty
         }
     }
 
-    public void OnAttack()
+    public override void OnAttack()
     {
         Collider[] list = Physics.OverlapSphere(myWeapon.position, 1.0f, enemyMask);
         foreach (Collider col in list)
@@ -62,7 +63,7 @@ public class ActionPlayer : CharacterProperty
             IBattle ib = col.GetComponent<IBattle>();
             if (ib != null)
             {
-                ib.OnDamage(0.5f);
+                ib.OnDamage(50.0f);
             }
         }
     }

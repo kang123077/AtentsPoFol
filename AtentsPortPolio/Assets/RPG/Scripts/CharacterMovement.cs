@@ -109,12 +109,12 @@ public class CharacterMovement : CharacterProperty
 
             float delta = 0.0f;
             // 이동값이 0이 아니면 이동
-            if (!Mathf.Approximately(dist, 0.0f))
+            if (dist > 0.01f)
             {
                 myAnim.SetBool("isMove", true);
                 delta = Time.deltaTime * myMoveStat.moveSpeed;
                 if (delta > dist) delta = dist;
-                transform.Translate(dir * delta, Space.World);
+                if (!myAnim.GetBool("isAttacking")) transform.Translate(dir * delta, Space.World);
             }
             else
             {

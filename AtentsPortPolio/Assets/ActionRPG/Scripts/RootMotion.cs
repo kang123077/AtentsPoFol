@@ -23,8 +23,9 @@ public class RootMotion : MonoBehaviour
     {
         // 물리의 경우 0.02, 1초마다 50번 고정적으로 실행되나 update는 아님
         // 따라서 버벅거리는 현상을 없애려면 움직임도 FixedUpdate로 해줘야 함
-        transform.parent.position = deltaPosition;
         // transform.parent.rotation = deltaRotation;
+        transform.parent.position += deltaPosition;
+        transform.parent.rotation *= deltaRotation;
         deltaPosition = Vector3.zero;
         deltaRotation = Quaternion.identity;
     }

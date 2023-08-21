@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,6 +40,7 @@ public interface IBattle : ITranform, IDamage
 
 public class BattleSystem : AIMovement, IBattle, IAlarms
 {
+    public Color iconColor;
     [SerializeField] protected BattleStat myBattleStat;
     protected float curAttackDelay = 0.0f;
     protected UnityAction<float> changeHp;
@@ -58,6 +60,9 @@ public class BattleSystem : AIMovement, IBattle, IAlarms
     protected void Initialize()
     {
         curHealPoint = myBattleStat.MaxHealPoint;
+
+        GameObject icon = Instantiate(Resources.Load("UI\\MiniMapIcon") as GameObject, SceneData.inst.miniMap);
+        icon.GetComponent<MiniMapIcon>().Initialize(transform, iconColor);
     }
 
     protected void AttackCheck()
@@ -74,7 +79,7 @@ public class BattleSystem : AIMovement, IBattle, IAlarms
         deadAlarms?.Invoke();
     }
 
-    public void OnAttack()
+    public virtual void OnAttack()
     {
         if (myTarget != null) myTarget.OnDamage(myBattleStat.AttackPower);
     }
