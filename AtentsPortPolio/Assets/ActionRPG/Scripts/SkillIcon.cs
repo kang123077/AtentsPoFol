@@ -24,7 +24,10 @@ public class SkillIcon : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        // 더블클릭을 원할 때는 eventData를 사용
+        // if eventData.clickCount == 2
         myIcon.fillAmount = 0.0f;
+        Debug.Log("click");
         StartCoroutine(Cooling());
     }
 

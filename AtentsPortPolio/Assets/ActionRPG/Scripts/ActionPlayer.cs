@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class ActionPlayer : BattleSystem
 {
@@ -23,18 +25,22 @@ public class ActionPlayer : BattleSystem
         myAnim.SetFloat("x", x);
         myAnim.SetFloat("y", y);
 
-        if (IsComboChecking)
+        // 이것은 event가 동작하는 UI위에 마우스가 올라가있다는 뜻.
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (Input.GetMouseButtonDown(0))
+            if (IsComboChecking)
             {
-                clickCount++;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    clickCount++;
+                }
             }
-        }
-        else
-        {
-            if (!myAnim.GetBool("isAttacking") && Input.GetMouseButtonDown(0))
+            else
             {
-                myAnim.SetTrigger("Attack");
+                if (!myAnim.GetBool("isAttacking") && Input.GetMouseButtonDown(0))
+                {
+                    myAnim.SetTrigger("Attack");
+                }
             }
         }
     }
